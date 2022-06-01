@@ -7,6 +7,7 @@ export default class ImageSlider {
   sliderListEl;
   nextBtnEl;
   previousBtnEl;
+  indicatorWrapEl;
 
   constructor() {
     this.assignElement();
@@ -14,6 +15,8 @@ export default class ImageSlider {
     this.initSlideWidth();
     this.initSliderListWidth();
     this.addEvent();
+    this.createIndicator();
+    this.setIndicator();
   }
 
   assignElement() {
@@ -21,6 +24,7 @@ export default class ImageSlider {
     this.sliderListEl = this.sliderWrapEl.querySelector("#slider");
     this.nextBtnEl = this.sliderWrapEl.querySelector("#next");
     this.previousBtnEl = this.sliderWrapEl.querySelector("#previous");
+    this.indicatorWrapEl = this.sliderWrapEl.querySelector("#indicator-wrap");
   }
 
   initSliderNumber() {
@@ -38,6 +42,21 @@ export default class ImageSlider {
   addEvent() {
     this.nextBtnEl.addEventListener("click", this.moveToRight.bind(this));
     this.previousBtnEl.addEventListener("click", this.moveToLeft.bind(this));
+    this.indicatorWrapEl.addEventListener(
+      "click",
+      this.onClickIndicator.bind(this)
+    );
+  }
+
+  onClickIndicator(event) {
+    const indexPosition = parseInt(event.target.dataset.index, 10);
+    if (Number.isSafeInteger(indexPosition)) {
+      this.#currentPosition = indexPosition;
+      this.sliderListEl.style.left = `-${
+        this.#slideWidth * this.#currentPosition
+      }px`;
+      this.setIndicator();
+    }
   }
 
   moveToRight() {
@@ -48,6 +67,7 @@ export default class ImageSlider {
     this.sliderListEl.style.left = `-${
       this.#slideWidth * this.#currentPosition
     }px`;
+    this.setIndicator();
   }
 
   moveToLeft() {
@@ -58,5 +78,25 @@ export default class ImageSlider {
     this.sliderListEl.style.left = `-${
       this.#slideWidth * this.#currentPosition
     }px`;
+    this.setIndicator();
   }
+
+  createIndicator() {
+    const docFragment = document.createDocumentFragment();
+    for (let i = 0; i < this.#slideNumber; i += 1) {
+      const li = document.createElement("li");
+      li.dataset.index = i;
+      docFragment.appendChild(li);
+    }
+    this.indicatorWrapEl.querySelector("ul").appendChild(docFragment);
+  }
+
+  setIndicator() {
+    this.indicatorWrapEl.querySelector("li.active")?.classList.remove("active");
+    this.indicatorWrapEl
+      .querySelector(`ul li:nth-child(${this.#currentPosition + 1})`)
+      .classList.add("active");
+  }
+
+  clickIndicator() {}
 }
