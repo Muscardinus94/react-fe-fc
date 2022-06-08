@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="main.css" />
+    <title>BMI</title>
+  </head>
+
+  <body>
+    <form onsubmit="onSubmit(event)">
+      <div class="row">
+        <div class="form-inp">
+          <label for="w">몸무게 (kg)</label>
+          <input
+            class="inp"
+            type="number"
+            placeholder="kg 단위"
+            name="w"
+            id="w"
+          />
+        </div>
+        <div class="form-inp">
+          <label for="h">신장 (m)</label>
+          <input
+            class="inp"
+            type="number"
+            placeholder="m 단위"
+            name="h"
+            id="h"
+          />
+        </div>
+        <button type="submit" class="btn">결과</button>
+      </div>
+    </form>
+    <script src="main.js"></script>
+  </body>
+</html>
