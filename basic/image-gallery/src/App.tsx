@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useState, useCallback, useRef } from "react";
+import { useDropzone } from "react-dropzone";
 import "./App.css";
 import ImageBox from "./components/imageBox";
 
 function App() {
-  const [imageList, setImageList] = React.useState<string[]>([]);
-  const inpRef = React.useRef<HTMLInputElement>(null);
+  const [imageList, setImageList] = useState<string[]>([]);
+  const onDrop = useCallback((acceptedFiles: any) => {
+    if (acceptedFiles.length !== 0) {
+      for (const file of acceptedFiles) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = (event) => {
+          setImageList((prev) => [...prev, event.target?.result as string]);
+        };
+      }
+    }
+  }, []);
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
     <div className="container">
@@ -17,32 +29,27 @@ function App() {
           </div>
         )}
 
-        <input
-          type="file"
-          ref={inpRef}
-          onChange={(event) => {
-            if (event.currentTarget.files?.[0]) {
-              const file = event.currentTarget.files?.[0];
-              const reader = new FileReader();
-              reader.readAsDataURL(file);
-              reader.onloadend = (event) => {
-                setImageList((prev) => [
-                  ...prev,
-                  event.target?.result as string,
-                ]);
-              };
-            }
-          }}
-        />
         {imageList.map((el, idx) => (
           <ImageBox src={el} key={el + idx} />
         ))}
-        <div
-          className="plus-box"
-          onClick={() => {
-            inpRef.current?.click();
-          }}
-        >
+        <div {...getRootProps()} className="plus-box">
+          <input
+            type="file"
+            {...getInputProps()}
+            // onChange={(event) => {
+            //   if (event.currentTarget.files?.[0]) {
+            //     const file = event.currentTarget.files?.[0];
+            //     const reader = new FileReader();
+            //     reader.readAsDataURL(file);
+            //     reader.onloadend = (event) => {
+            //       setImageList((prev) => [
+            //         ...prev,
+            //         event.target?.result as string,
+            //       ]);
+            //     };
+            //   }
+            // }}
+          />
           +
         </div>
       </div>
