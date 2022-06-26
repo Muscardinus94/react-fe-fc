@@ -1,10 +1,13 @@
 class DrawingBoard {
   MODE = "NONE"; // NONE | BRUSH | ERASER
   isMouseDown = false;
+  eraserColor = "#ffffff";
+  backgroundColor = "#ffffff";
 
   constructor() {
     this.assignElement();
     this.initContext();
+    this.initCanvasBackground();
     this.addEvent();
   }
 
@@ -18,10 +21,16 @@ class DrawingBoard {
     this.brushSliderEl = this.brushPanelEl.querySelector("#brushSize");
     this.brushSizePreviewEl =
       this.brushPanelEl.querySelector("#brushSizePreview");
+    this.eraserEl = this.toolbarEl.querySelector("#eraser");
   }
 
   initContext() {
     this.context = this.canvasEl.getContext("2d");
+  }
+
+  initCanvasBackground() {
+    this.context.fillStyle = this.backgroundColor;
+    this.context.fillRect(0, 0, this.canvasEl.width, this.canvasEl.height);
   }
 
   addEvent() {
@@ -35,6 +44,17 @@ class DrawingBoard {
       this.onChangeBrushSize.bind(this)
     );
     this.colorPickerEl.addEventListener("input", this.onChangeColor.bind(this));
+    this.eraserEl.addEventListener("click", this.onClickEraser.bind(this));
+  }
+
+  onClickEraser(event) {
+    const isActive = event.currentTarget.classList.contains("active");
+
+    this.MODE = isActive ? "NONE" : "ERASER";
+    this.canvasEl.style.cursor = isActive ? "default" : "crosshair";
+    this.brushPanelEl.classList.add("hide");
+    this.eraserEl.classList.toggle("active");
+    this.brushEl.classList.remove("active");
   }
 
   onMouseOut() {
@@ -70,8 +90,13 @@ class DrawingBoard {
     this.context.beginPath();
     this.context.moveTo(currentPosition.x, currentPosition.y);
     this.context.lineCap = "round";
-    this.context.strokeStyle = this.colorPickerEl.value;
-    this.context.lineWidth = this.brushSliderEl.value;
+    if (this.MODE === "BRUSH") {
+      this.context.strokeStyle = this.colorPickerEl.value;
+      this.context.lineWidth = this.brushSliderEl.value;
+    } else if (this.MODE === "ERASER") {
+      this.context.strokeStyle = this.eraserColor;
+      this.context.lineWidth = 50;
+    }
   }
 
   getMousePosition(event) {
@@ -90,6 +115,7 @@ class DrawingBoard {
     this.canvasEl.style.cursor = isActive ? "default" : "crosshair";
     this.brushPanelEl.classList.toggle("hide");
     this.brushEl.classList.toggle("active");
+    this.eraserEl.classList.remove("active");
   }
 }
 
