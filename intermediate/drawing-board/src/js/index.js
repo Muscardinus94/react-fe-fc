@@ -3,6 +3,8 @@ class DrawingBoard {
   isMouseDown = false;
   eraserColor = "#ffffff";
   backgroundColor = "#ffffff";
+  isNavigatorVisible = false;
+  undoArray = [];
 
   constructor() {
     this.assignElement();
@@ -26,6 +28,7 @@ class DrawingBoard {
     this.navigatorImageContainerEl = this.containerEl.querySelector("#imgNav");
     this.navigatorImageEl =
       this.navigatorImageContainerEl.querySelector("#canvasImg");
+    this.undoEl = this.toolbarEl.querySelector("#undo");
   }
 
   initContext() {
@@ -53,15 +56,53 @@ class DrawingBoard {
       "click",
       this.onClickNavigator.bind(this)
     );
+    this.undoEl.addEventListener("click", this.onClickUndo.bind(this));
+  }
+
+  onClickUndo() {
+    if (this.undoArray.length === 0) {
+      alert("더이상 실행취소 불가합니다!");
+      return;
+    }
+
+    let previousDataUrl = this.undoArray.pop();
+    let previousImage = new Image();
+    previousImage.onload = () => {
+      this.context.clearRect(0, 0, this.canvasEl.width, this.canvasEl.height);
+      this.context.drawImage(
+        previousImage,
+        0,
+        0,
+        this.canvasEl.width,
+        this.canvasEl.height,
+        0,
+        0,
+        this.canvasEl.width,
+        this.canvasEl.height
+      );
+    };
+    previousImage.src = previousDataUrl;
+  }
+
+  saveState() {
+    if (this.undoArray.length > 4) {
+      this.undoArray.shift();
+      this.undoArray.push(this.canvasEl.toDataURL());
+    } else {
+      this.undoArray.push(this.canvasEl.toDataURL());
+    }
   }
 
   onClickNavigator(event) {
     event.currentTarget.classList.toggle("active");
+    this.isNavigatorVisible = event.currentTarget.classList.contains("active");
     this.navigatorImageContainerEl.classList.toggle("hide");
     this.updateNavigator();
   }
 
   updateNavigator() {
+    if (!this.isNavigatorVisible) return;
+
     this.navigatorImageEl.src = this.canvasEl.toDataURL();
   }
 
@@ -117,6 +158,7 @@ class DrawingBoard {
       this.context.strokeStyle = this.eraserColor;
       this.context.lineWidth = 50;
     }
+    this.saveState();
   }
 
   getMousePosition(event) {
