@@ -9,6 +9,7 @@ import QueueMusic from "@mui/icons-material/QueueMusic";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import "./Controls.scss";
+import { useSelector } from "react-redux";
 
 const Controls = ({
   showMusicList,
@@ -18,34 +19,33 @@ const Controls = ({
   pause,
   setVolume,
 }) => {
+  const playing = useSelector((state) => state.playing);
+
+  const onClickPlay = () => {
+    play();
+  };
+  const onClickPause = () => {
+    pause();
+  };
 
   return (
     <div className="control-area">
-      <QueueMusic
-        sx={{ fontSize: 30, cursor: "pointer" }}
-    
-      />
+      <QueueMusic sx={{ fontSize: 30, cursor: "pointer" }} />
       <RepeatIcon sx={{ fontSize: 30, cursor: "pointer" }} />
-      <SkipPrevious
-        sx={{ fontSize: 30, cursor: "pointer" }}
-
-      />
-      {true ? (
+      <SkipPrevious sx={{ fontSize: 30, cursor: "pointer" }} />
+      {playing ? (
         <PauseIcon
           sx={{ fontSize: 30, cursor: "pointer" }}
-          
+          onClick={onClickPause}
         />
       ) : (
         <PlayArrow
           className="play"
           sx={{ fontSize: 30, cursor: "pointer" }}
-    
+          onClick={onClickPlay}
         />
       )}
-      <SkipNext
-        sx={{ fontSize: 30, cursor: "pointer" }}
-
-      />
+      <SkipNext sx={{ fontSize: 30, cursor: "pointer" }} />
       <div className="volume-container">
         <VolumeUpIcon sx={{ fontSize: 20 }} />
         <input
