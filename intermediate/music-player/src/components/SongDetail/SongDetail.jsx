@@ -1,10 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import "./SongDetail.scss";
-import img1 from "../../images/music-1.jpg";
 
 function SongDetail() {
-  const playing = useSelector((state) => state.playing);
+  const { playing, playList, currentIndex } = useSelector((state) => state);
 
   return (
     <>
@@ -12,11 +11,14 @@ function SongDetail() {
         <span>{playing ? "Now Playing" : "Not Playing"}</span>
       </div>
       <div className="img-area">
-        <img src={img1} alt="" />
+        <img
+          src={playList[currentIndex].img}
+          alt={playList[currentIndex].name}
+        />
       </div>
       <div className="music-info">
-        <p className="song">음악제목</p>
-        <p className="artist">아티스트</p>
+        <p className="song">{playList[currentIndex].name}</p>
+        <p className="artist">{playList[currentIndex].artist}</p>
       </div>
     </>
   );
