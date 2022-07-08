@@ -81,7 +81,7 @@ function ProgressArea(props, ref) {
     <div className="progress-area" onMouseDown={onClickProgress}>
       <div className="progress-bar" ref={progressBar}>
         <audio
-          autoPlay
+          // autoPlay
           onEnded={onEnded}
           ref={audio}
           src={playList[currentIndex].src}
