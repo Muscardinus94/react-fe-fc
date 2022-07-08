@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
@@ -64,12 +64,16 @@ const Controls = ({
   const onChangeVolume = (event) => {
     changeVolume(event.target.value);
   };
-  const onClickPrevious = () => {
-    dispatch(prevMusic());
-  };
-  const onClickNext = () => {
-    dispatch(nextMusic());
-  };
+  const onClickPrevious = useCallback(() => {
+    if (repeat === "ONE") {
+      resetDuration();
+    } else dispatch(prevMusic());
+  }, [repeat, resetDuration, dispatch]);
+  const onClickNext = useCallback(() => {
+    if (repeat === "ONE") {
+      resetDuration();
+    } else dispatch(nextMusic());
+  }, [repeat, resetDuration, dispatch]);
   const onClickRepeat = () => {
     dispatch(setRepeat());
   };
