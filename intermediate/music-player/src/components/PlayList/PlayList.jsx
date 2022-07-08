@@ -6,7 +6,10 @@ import QueueMusic from "@mui/icons-material/QueueMusic";
 import Close from "@mui/icons-material/Close";
 import PlayListItem from "./PlayListItem";
 import "./PlayList.scss";
-import { setCurrentIndex } from "../../store/musicPlayerReducer";
+import {
+  setCurrentIndex,
+  updatePlayList,
+} from "../../store/musicPlayerReducer";
 
 const PlayList = ({ showPlayList, setShowPlayList }) => {
   const onClickClosePlayList = () => {
@@ -19,6 +22,9 @@ const PlayList = ({ showPlayList, setShowPlayList }) => {
   };
   const onClickItem = (index) => {
     dispatch(setCurrentIndex(index));
+  };
+  const onDropItem = (newPlayList) => {
+    dispatch(updatePlayList(newPlayList));
   };
 
   return (
@@ -35,6 +41,7 @@ const PlayList = ({ showPlayList, setShowPlayList }) => {
       </div>
       <SortableList
         data={playList}
+        onDropItem={onDropItem}
         renderItem={renderItem}
         onClickItem={onClickItem}
       />
