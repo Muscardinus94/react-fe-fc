@@ -24,4 +24,4 @@ function SongDetail() {
   );
 }
 
-export default SongDetail;
+export default React.memo(SongDetail);

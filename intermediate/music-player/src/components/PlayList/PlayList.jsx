@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import SortableList from "@shelvy/sortable-list";
 import classNames from "classnames";
@@ -17,15 +17,21 @@ const PlayList = ({ showPlayList, setShowPlayList }) => {
   };
   const playList = useSelector((state) => state.playList);
   const dispatch = useDispatch();
-  const renderItem = (item, index) => {
+  const renderItem = useCallback((item, index) => {
     return <PlayListItem item={item} index={index} />;
-  };
-  const onClickItem = (index) => {
-    dispatch(setCurrentIndex(index));
-  };
-  const onDropItem = (newPlayList) => {
-    dispatch(updatePlayList(newPlayList));
-  };
+  }, []);
+  const onClickItem = useCallback(
+    (index) => {
+      dispatch(setCurrentIndex(index));
+    },
+    [dispatch]
+  );
+  const onDropItem = useCallback(
+    (newPlayList) => {
+      dispatch(updatePlayList(newPlayList));
+    },
+    [dispatch]
+  );
 
   return (
     <div className={classNames("play-list", { show: showPlayList })}>
@@ -49,4 +55,4 @@ const PlayList = ({ showPlayList, setShowPlayList }) => {
   );
 };
 
-export default PlayList;
+export default React.memo(PlayList);

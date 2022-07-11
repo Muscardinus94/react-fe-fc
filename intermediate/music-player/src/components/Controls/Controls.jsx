@@ -16,7 +16,7 @@ import {
   setRepeat,
 } from "../../store/musicPlayerReducer";
 
-const RepeatButton = ({ repeat, onClick, ...props }) => {
+const RepeatButton = React.memo(({ repeat, onClick, ...props }) => {
   switch (repeat) {
     case "ALL":
       return (
@@ -42,7 +42,7 @@ const RepeatButton = ({ repeat, onClick, ...props }) => {
     default:
       return null;
   }
-};
+});
 
 const Controls = ({
   setShowPlayList,
@@ -73,12 +73,12 @@ const Controls = ({
       resetDuration();
     } else dispatch(nextMusic());
   }, [repeat, resetDuration, dispatch]);
-  const onClickRepeat = () => {
+  const onClickRepeat = useCallback(() => {
     dispatch(setRepeat());
-  };
-  const onClickShowPlayList = () => {
+  }, [dispatch]);
+  const onClickShowPlayList = useCallback(() => {
     setShowPlayList(true);
-  };
+  }, [setShowPlayList]);
 
   return (
     <div className="control-area">
@@ -123,4 +123,4 @@ const Controls = ({
   );
 };
 
-export default Controls;
+export default React.memo(Controls);
